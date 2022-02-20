@@ -105,34 +105,44 @@ class User {
         return usersID;
 
     }
+    // Método que converte do objt instanciado para um JSON
+    toJSON(){
+
+        let json = {}
+        //Atributos do meu Obj (retorno um array)
+        Object.keys(this).forEach(key =>{
+            
+            if(this[key] !== undefined) json[key] =  his[key];
+
+        });
+        return json;
+    }
 
     save(){
 
-        let users = User.getUsersStorage();
+        return new Promise((resolve, reject)=>{
 
-        if (this.id > 0) {
-            
-            users.map(u=>{
+            let promise;
 
-                if (u._id == this.id) {
+            if(this.id){
 
-                    Object.assign(u, this);
+                promise = HttpRequest.put(`/users/${this.id}`, this.toJSON());
 
-                }
 
-                return u;
+            }else{
 
-            });
+                promise = HttpRequest.post(`/users/`, this.toJSON());
+                
+            }
 
-        } else {
+            promise.then(data =>{
 
-            this._id = this.getNewID();
-
-            users.push(this);
-
-        }
-
-        localStorage.setItem("users", JSON.stringify(users));
+                this.loadFromJSON(data);
+                resolve(this)
+            }).catch(e=>{
+                reject(e)
+            })
+        })
 
     }
 

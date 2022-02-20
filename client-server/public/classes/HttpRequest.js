@@ -1,26 +1,26 @@
-class httpRequest{
+class HttpRequest{
     
     static get(url, params = {}){
         
-        return httpRequest.request('GET', url, params)
+        return HttpRequest.request('GET', url, params)
 
     }
 
     static delete(url, params = {}){
         
-        return httpRequest.request('DELETE', url, params)
+        return HttpRequest.request('DELETE', url, params)
 
     }
 
     static put(url, params = {}){
         
-        return httpRequest.request('PUT', url, params)
+        return HttpRequest.request('PUT', url, params)
 
     }
 
     static post(url, params = {}){
         
-        return httpRequest.request('POST', url, params)
+        return HttpRequest.request('POST', url, params)
 
     }
 
@@ -50,8 +50,9 @@ class httpRequest{
                 }
     
                 resolve(obj);     
-            }    
-            ajax.send();
+            }   
+            ajax.setRequestHeader('Content-Type', 'application/json') 
+            ajax.send(JSON.stringify(params));
 
         })        
     }
