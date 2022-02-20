@@ -24,40 +24,35 @@ class httpRequest{
 
     }
 
-
-
-
-
-
     static request(method, url, params = {}){
-
+        // new Promise é o callback  
         return new Promise((resolve,reject)=>{
 
             let ajax = new XMLHttpRequest();
 
             ajax.open(method.toUpperCase(), url);
+
             ajax.onerror = event =>{
                 reject(e);
             }
 
             ajax.onload = event =>{
-                let obj = {users: []};
-    
-    
+                let obj = {};
+        
                 try{
+
                     obj = JSON.parse(ajax.responseText);
+
                 }catch(e){
+
                     console.error(e);
                     reject(e);
                 }
     
                 resolve(obj);     
-            }
-    
+            }    
             ajax.send();
-        })
 
-        
-
+        })        
     }
 }
