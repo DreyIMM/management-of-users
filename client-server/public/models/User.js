@@ -69,7 +69,7 @@ class User {
                     this[name] = new Date(json[name]);
                 break;
                 default:
-                    this[name] = json[name];
+                    if(name.substring(0, 1) === '_') this[name] = json[name];
 
             }
             
@@ -80,7 +80,8 @@ class User {
 
     static getUsersStorage() {
 
-        return  HttpRequest.get('/users')
+        return Fetch.get('/users');
+
     }
  
 
