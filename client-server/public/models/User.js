@@ -80,78 +80,57 @@ class User {
 
     static getUsersStorage() {
 
-        let users = [];
+        return  HttpRequest.get('/users')
+    }
+ 
 
-        if (localStorage.getItem("users")) {
+    // Método que converte do objt instanciado para um JSON
+    toJSON(){
 
-            users = JSON.parse(localStorage.getItem("users"));
+        let json = {}
+        //Atributos do meu Obj (retorno um array)
+        Object.keys(this).forEach(key =>{
+            
+            if(this[key] !== undefined) json[key] =  this[key];
 
-        }
-
-        return users;
-
+        });
+        return json;
     }
 
-    getNewID(){
 
-        let usersID = parseInt(localStorage.getItem("usersID"));
-
-        if (!usersID > 0) usersID = 0;
-
-        usersID++;
-
-        localStorage.setItem("usersID", usersID);
-
-        return usersID;
-
-    }
 
     save(){
 
-        let users = User.getUsersStorage();
+        return new Promise((resolve, reject)=>{
 
-        if (this.id > 0) {
-            
-            users.map(u=>{
+            let promise;
 
-                if (u._id == this.id) {
+            if(this.id){
 
-                    Object.assign(u, this);
+                promise = HttpRequest.put(`/users/${this.id}`, this.toJSON());
 
-                }
+            }else{
+                
+                promise = HttpRequest.post(`/users`, this.toJSON());
+                
+            }
 
-                return u;
+            promise.then(data =>{
 
-            });
+                this.loadFromJSON(data);
+                resolve(this)
 
-        } else {
+            }).catch(e=>{
+                reject(e)
 
-            this._id = this.getNewID();
-
-            users.push(this);
-
-        }
-
-        localStorage.setItem("users", JSON.stringify(users));
+            })
+        })
 
     }
 
     remove(){
 
-        let users = User.getUsersStorage();
-
-        users.forEach((userData, index)=>{
-
-            if (this._id == userData._id) {
-
-                users.splice(index, 1);
-
-            }
-
-        });
-
-        localStorage.setItem("users", JSON.stringify(users));
-
+        
+        return HttpRequest.delete(`/users/${this.id}`)
     }
-
 }
